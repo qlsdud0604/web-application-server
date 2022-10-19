@@ -12,28 +12,19 @@ public class RequestLine {
 
     private HttpMethod method;   // 요청 메서드(GET, POST)
     private String path;   // 요청 URL
-    private Map<String, String> params = new HashMap<String, String>();   // 요청 파라메터
+    private String queryString;   // 쿼리 스트링
 
     public RequestLine(String requestLine) {
         log.debug("===== request line : {}=====", requestLine);   // 요청 라인
 
         String[] tokens = requestLine.split(" ");
-        if (tokens.length != 3) {
-            throw new IllegalArgumentException(requestLine + "이 형식에 맞지 않습니다.");
-        }
-
         method = HttpMethod.valueOf(tokens[0]);
-        if (method.isPost()) {
-            path = tokens[1];
-            return;
-        }
 
-        int index = tokens[1].indexOf("?");
-        if (index == -1) {
-            path = tokens[1];
-        } else {
-            path = tokens[1].substring(0, index);
-            params = HttpRequestUtils.parseQueryString(tokens[1].substring(index + 1));
+        String[] url = tokens[1].split("\\?");
+        path = url[0];
+
+        if (url.length == 2) {
+            queryString = url[1];
         }
     }
 
@@ -45,7 +36,7 @@ public class RequestLine {
         return path;
     }
 
-    public Map<String, String> getParams() {
-        return params;
+    public String getQueryString() {
+        return queryString;
     }
 }

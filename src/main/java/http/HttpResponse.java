@@ -31,14 +31,15 @@ public class HttpResponse {
         try {
             byte[] body = Files.readAllBytes(new File("./webapp" + url).toPath());
 
-            if (url.endsWith("./css")) {
+            if (url.endsWith(".css")) {
                 headers.put("Content-Type", "text/css");
-            } else if (url.endsWith("./js")) {
+            } else if (url.endsWith(".js")) {
                 headers.put("Content-Type", "application/javascript");
             } else {
                 headers.put("Content-Type", "text/html;charset=utf-8");
             }
             headers.put("Content-Length", body.length + "");
+
             response200Header();
             responseBody(body);
         } catch (IOException e) {
@@ -59,7 +60,7 @@ public class HttpResponse {
             dos.writeBytes("HTTP/1.1 302 Found \r\n");
             processHeaders();
             dos.writeBytes("Location: " + redirectUrl + " \r\n");
-            dos.writeBytes(" \r\n");
+            dos.writeBytes("\r\n");
         } catch (IOException e) {
             log.error(e.getMessage());
         }
@@ -69,7 +70,7 @@ public class HttpResponse {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
             processHeaders();
-            dos.writeBytes(" \r\n");
+            dos.writeBytes("\r\n");
         } catch (IOException e) {
             log.error(e.getMessage());
         }
@@ -77,7 +78,7 @@ public class HttpResponse {
     private void responseBody(byte[] body) {
         try {
             dos.write(body ,0, body.length);
-            dos.writeBytes(" \r\n");
+            dos.writeBytes("\r\n");
             dos.flush();
         } catch(IOException e) {
             log.error(e.getMessage());

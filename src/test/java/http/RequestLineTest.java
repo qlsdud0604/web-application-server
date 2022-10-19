@@ -18,7 +18,7 @@ public class RequestLineTest {
         RequestLine requestLine = new RequestLine("GET /user/create?userId=kolon&password=kolon&name=kolon HTTP/1.1");
         assertEquals("GET", requestLine.getMethod().toString());
         assertEquals("/user/create", requestLine.getPath());
-        assertEquals("kolon", requestLine.getParams().get("userId"));
+        assertEquals("userId=kolon&password=kolon&name=kolon", requestLine.getQueryString());
     }
 
 }

@@ -10,7 +10,7 @@ import java.util.Map;
 public class RequestLine {
     private static final Logger log = LoggerFactory.getLogger(RequestLine.class);
 
-    private String method;   // 요청 메서드(GET, POST)
+    private HttpMethod method;   // 요청 메서드(GET, POST)
     private String path;   // 요청 URL
     private Map<String, String> params = new HashMap<String, String>();   // 요청 파라메터
 
@@ -22,8 +22,8 @@ public class RequestLine {
             throw new IllegalArgumentException(requestLine + "이 형식에 맞지 않습니다.");
         }
 
-        method = tokens[0];
-        if (method.equals("POST")) {
+        method = HttpMethod.valueOf(tokens[0]);
+        if (method.isPost()) {
             path = tokens[1];
             return;
         }
@@ -37,7 +37,7 @@ public class RequestLine {
         }
     }
 
-    public String getMethod() {
+    public HttpMethod getMethod() {
         return method;
     }
 

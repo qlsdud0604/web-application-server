@@ -2,12 +2,16 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import controller.Controller;
 import http.HttpRequest;
 import http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.HttpRequestUtils;
 
 
 public class RequestHandler extends Thread {
@@ -24,6 +28,10 @@ public class RequestHandler extends Thread {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             HttpRequest request = new HttpRequest(in);
             HttpResponse response = new HttpResponse(out);
+
+            if (request.getCookies().getCookie("SESSIONID") == null) {
+                response.addHeader("Set-Cookie", "SESSIONID=" + UUID.randomUUID());
+            }
 
             Controller controller = RequestMapping.getController(request.getPath());
 
@@ -44,5 +52,12 @@ public class RequestHandler extends Thread {
             return "/index.html";
         }
         return path;
+    }
+
+    private String getSessionId(String cookieValue) {
+        Map<String, String> cookies = new HashMap<String, String>();
+        cookies = HttpRequestUtils.parseCookies(cookieValue);
+
+        return cookies.get("SESSIONID");
     }
 }
